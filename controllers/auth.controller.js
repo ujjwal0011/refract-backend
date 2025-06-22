@@ -29,11 +29,13 @@ export const googleCallback = (req, res) => {
       { expiresIn: "1d" }
     );
 
+    
     res.cookie("token", token, {
       httpOnly: true,
-      secure: true,
+      secure: process.env.NODE_ENV === "production", // Only secure in production
       maxAge: 24 * 60 * 60 * 1000,
-      sameSite: "lax",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // "none" for cross-origin
+      domain: process.env.NODE_ENV === "production" ? undefined : undefined // Let browser decide
     });
 
     const frontendUrl = process.env.FRONTEND_URL;
@@ -45,13 +47,11 @@ export const googleCallback = (req, res) => {
       });
     }
 
-    res.redirect(frontendUrl);
+  
+    res.redirect(`${frontendUrl}?auth=success`);
   } catch (error) {
     console.error("Google OAuth callback error:", error);
-    res.status(500).json({
-      success: false,
-      message: "Authentication failed due to server error",
-    });
+    res.redirect(`${process.env.FRONTEND_URL}?auth=error`);
   }
 };
 
