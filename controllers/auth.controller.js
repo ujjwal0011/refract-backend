@@ -31,9 +31,9 @@ export const googleCallback = (req, res) => {
 
     res.cookie("token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: true,
       maxAge: 24 * 60 * 60 * 1000,
-      sameSite: "strict",
+      sameSite: "lax",
     });
 
     const frontendUrl = process.env.FRONTEND_URL;
