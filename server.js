@@ -25,6 +25,9 @@ app.use(passport.initialize());
 
 app.use("/auth", authRoutes);
 app.use("/api/review", reviewRoutes);
+app.get("/ping", (req, res) => {
+  res.status(200).json({ message: "pong" });
+})
 
 connectDB();
 
